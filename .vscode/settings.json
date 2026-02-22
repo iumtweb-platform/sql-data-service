@@ -1,0 +1,13 @@
+{
+  "java.jdt.ls.java.home": "/nix/store/yb16bzvkdimkgczlw30pkhfxnzal26ks-openjdk-21.0.9+10/lib/openjdk",
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-21",
+      "path": "/nix/store/yb16bzvkdimkgczlw30pkhfxnzal26ks-openjdk-21.0.9+10/lib/openjdk",
+      "default": true
+    }
+  ],
+  "maven.terminal.useJavaHome": true,
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.configuration.updateBuildConfiguration": "automatic"
+}
