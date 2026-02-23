@@ -2,24 +2,15 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "mvn: package (skip tests)",
+      "label": "gradle: classes",
       "type": "shell",
-      "command": "./mvnw",
-      "args": [
-        "-DskipTests",
-        "package"
-      ],
-      "group": "build"
-    },
-    {
-      "label": "mvn: spring-boot:run (debug 5005)",
-      "type": "shell",
-      "command": "./mvnw",
-      "args": [
-        "spring-boot:run",
-        "-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
-      ],
-      "problemMatcher": []
+      "command": "./gradlew",
+      "args": ["classes"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$javac"]
     }
   ]
 }

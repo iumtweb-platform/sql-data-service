@@ -1,5 +1,7 @@
 {
   "java.jdt.ls.java.home": "/nix/store/yb16bzvkdimkgczlw30pkhfxnzal26ks-openjdk-21.0.9+10/lib/openjdk",
+  "gradle.java.home": "/nix/store/yb16bzvkdimkgczlw30pkhfxnzal26ks-openjdk-21.0.9+10/lib/openjdk",
+  "java.import.gradle.java.home": "/nix/store/yb16bzvkdimkgczlw30pkhfxnzal26ks-openjdk-21.0.9+10/lib/openjdk",
   "java.configuration.runtimes": [
     {
       "name": "JavaSE-21",
