@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  docker:
+  build-push-deploy:
     runs-on: self-hosted
     steps:
       -
