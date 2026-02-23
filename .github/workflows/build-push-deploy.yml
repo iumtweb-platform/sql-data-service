@@ -1,0 +1,71 @@
+name: Build, Push to GitHub Container Registry and Deploy to Dokploy
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  docker:
+    runs-on: self-hosted
+    steps:
+      -
+        name: Checkout repository
+        uses: actions/checkout@v4
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ vars.GHCR_USER }}
+          password: ${{ secrets.GHCR_TOKEN }}
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Read app version from Maven
+        run: |
+          APP_VERSION=$(sh ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+      -
+        name: Build version-commit tag
+        run: |
+          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
+          echo "SHORT_SHA=${SHORT_SHA}" >> $GITHUB_ENV
+          echo "APP_VERSION_COMMIT=${APP_VERSION}-${SHORT_SHA}" >> $GITHUB_ENV
+      -
+        name: Tag repository commit
+        run: |
+          TAG_NAME="${APP_VERSION_COMMIT}"
+          if git ls-remote --tags origin "refs/tags/${TAG_NAME}" | grep -q "refs/tags/${TAG_NAME}$"; then
+            echo "Tag ${TAG_NAME} already exists. Skipping."
+          else
+            git tag "${TAG_NAME}" "${GITHUB_SHA}"
+            git push origin "refs/tags/${TAG_NAME}"
+          fi
+      -
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: |
+            ghcr.io/${{ vars.GHCR_USER }}/sql-data-service:latest
+            ghcr.io/${{ vars.GHCR_USER }}/sql-data-service:${{ env.APP_VERSION }}
+            ghcr.io/${{ vars.GHCR_USER }}/sql-data-service:${{ env.APP_VERSION_COMMIT }}
+      -
+        name: Trigger Dokploy Deployment
+        run: |
+            curl -X 'POST' \
+            'https://dokploy.sekiganou.com/api/deploy/cweiNJe75LTXzaPyCx54S' \
+            -H 'accept: application/json' \
+            -H 'x-api-key: ${{ secrets.DOKPLOY_API_KEY }}' \
+            -H 'Content-Type: application/json' \
+            -d '{
+                 "applicationId": "${{ vars.DOKPLOY_APPLICATION_ID }}"
+            }'

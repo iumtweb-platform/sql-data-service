@@ -6,6 +6,8 @@ COPY src ./src
 
 RUN mvn -q -DskipTests package
 
+LABEL org.opencontainers.image.source https://github.com/iumtweb-platform/sql-data-service
+
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
