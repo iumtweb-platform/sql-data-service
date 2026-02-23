@@ -65,10 +65,9 @@ jobs:
       -
         name: Trigger Dokploy Deployment
         run: |
-          curl -X 'POST' \
-          'https://dokploy.sekiganou.com/api/deploy/cweiNJe75LTXzaPyCx54S' \
-          -H 'accept: application/json' \
-          -H 'x-api-key: ${{ secrets.DOKPLOY_API_KEY }}' \
-          -H 'Content-Type: application/json' \
-          -d '{
-          "applicationId": "${{ vars.DOKPLOY_APPLICATION_ID }}"
+          curl --fail-with-body -X POST \
+            'https://dokploy.sekiganou.com/api/deploy/cweiNJe75LTXzaPyCx54S' \
+            -H 'accept: application/json' \
+            -H 'x-api-key: ${{ secrets.DOKPLOY_API_KEY }}' \
+            -H 'Content-Type: application/json' \
+            -d "{\"applicationId\":\"${{ vars.DOKPLOY_APPLICATION_ID }}\"}"
