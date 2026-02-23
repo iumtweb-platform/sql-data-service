@@ -1,4 +1,4 @@
-name: Build, Push to GitHub Container Registry and Deploy to Dokploy
+name: Build and Push to GHCR
 
 on:
   push:
@@ -9,8 +9,8 @@ permissions:
   contents: write
 
 jobs:
-  build-push-deploy:
-    runs-on: self-hosted
+  build-and-push:
+    runs-on: ubuntu-latest
     steps:
       -
         name: Checkout repository
@@ -58,14 +58,3 @@ jobs:
             ghcr.io/${{ vars.GHCR_USER }}/sql-data-service:latest
             ghcr.io/${{ vars.GHCR_USER }}/sql-data-service:${{ env.APP_VERSION }}
             ghcr.io/${{ vars.GHCR_USER }}/sql-data-service:${{ env.APP_VERSION_COMMIT }}
-      -
-        name: Trigger Dokploy Deployment
-        run: |
-            curl -X 'POST' \
-            'https://dokploy.sekiganou.com/api/deploy/cweiNJe75LTXzaPyCx54S' \
-            -H 'accept: application/json' \
-            -H 'x-api-key: ${{ secrets.DOKPLOY_API_KEY }}' \
-            -H 'Content-Type: application/json' \
-            -d '{
-                 "applicationId": "${{ vars.DOKPLOY_APPLICATION_ID }}"
-            }'
