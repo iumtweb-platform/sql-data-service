@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.sqldataservice.api.validation.InvalidQueryException;
+import com.sqldataservice.api.validation.NotFoundException;
 import com.sqldataservice.api.validation.QueryValidationError;
 
 @RestControllerAdvice
@@ -17,6 +18,12 @@ public class ApiExceptionHandler {
   public ResponseEntity<ErrorResponse> handleInvalidQuery(InvalidQueryException exception) {
     var response = new ErrorResponse(exception.getMessage(), exception.getErrors());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException exception) {
+    var response = new ErrorResponse(exception.getMessage(), List.of());
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
   }
 
   public record ErrorResponse(String message, List<QueryValidationError> errors) {
