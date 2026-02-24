@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sqldataservice.api.repository.AnimeRepository;
+import com.sqldataservice.api.shared.AnimeSummaryItem;
 import com.sqldataservice.model.Anime;
 
 @Component
@@ -71,7 +72,7 @@ class ListAnimeHandler {
 
     var animeList = animePage
         .stream()
-        .map(anime -> new ListAnimeResponseContent(anime.getId(), anime.getTitle(),
+        .map(anime -> new AnimeSummaryItem(anime.getId(), anime.getTitle(),
             anime.getYear() != null ? anime.getYear().intValue() : null,
             anime.getImageUrl(), anime.getType().getType(), anime.getSynopsis()))
         .toList();
@@ -80,6 +81,6 @@ class ListAnimeHandler {
     int totalPages = animePage.getTotalPages();
 
     return new ListAnimeResponse(query.elementsPerPage(), query.page(), totalElements, totalPages,
-        animeList.toArray(new ListAnimeResponseContent[0]));
+        animeList.toArray(new AnimeSummaryItem[0]));
   }
 }

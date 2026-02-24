@@ -11,6 +11,7 @@ import com.sqldataservice.api.repository.AnimeRepository;
 import com.sqldataservice.api.repository.CharacterAnimeWorkRepository;
 import com.sqldataservice.api.repository.CharacterRepository;
 import com.sqldataservice.api.repository.PersonVoiceWorkRepository;
+import com.sqldataservice.api.shared.AnimeSummaryItem;
 import com.sqldataservice.api.shared.KeyValueItem;
 import com.sqldataservice.api.validation.NotFoundException;
 import com.sqldataservice.model.PersonVoiceWork;
@@ -94,10 +95,16 @@ class DetailAnimeHandler {
 
 					}).toArray(DetailAnimeResponseVoice[]::new);
 
+			AnimeSummaryItem[] recommendations = anime.getAnimesForRecommendedAnimeId().stream()
+					.map(r -> new AnimeSummaryItem(r.getId(), r.getTitle(),
+							r.getYear() != null ? r.getYear().intValue() : null, r.getImageUrl(), r.getType().getType(),
+							r.getSynopsis()))
+					.toArray(AnimeSummaryItem[]::new);
+
 			return new DetailAnimeResponse(anime.getId(), anime.getTitle(), anime.getSynopsis(),
 					anime.getImageUrl(), type, anime.getEpisodes().intValue(), status,
 					rating, genres, studios, themes, demographics, source, licensors, producers,
-					streamingServices, detailCharacters);
+					streamingServices, recommendations, detailCharacters);
 		}).orElseThrow(() -> new NotFoundException("Anime", String.valueOf(id)));
 	}
 }
