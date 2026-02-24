@@ -18,9 +18,9 @@ class DetailAnimeCrewHandler {
   }
 
   @Transactional(readOnly = true)
-  public DetailAnimeCrewResponse[] handle(DetailAnimeCrewQuery query) {
+  public DetailAnimeCrewResponse[] handle(int id) {
 
-    List<DetailAnimeCrewResponse> crew = personAnimeWorkRepository.findAllByIdAnimeId(query.id())
+    List<DetailAnimeCrewResponse> crew = personAnimeWorkRepository.findAllByIdAnimeId(id)
         .stream()
         .map(personAnimeWork -> new DetailAnimeCrewResponse(
             personAnimeWork.getPerson().getId(),
@@ -30,7 +30,7 @@ class DetailAnimeCrewHandler {
         .toList();
 
     if (crew.isEmpty()) {
-      throw new NotFoundException("Person Anime Work", String.valueOf(query.id()));
+      throw new NotFoundException("Person Anime Work", String.valueOf(id));
     }
 
     return crew.toArray(DetailAnimeCrewResponse[]::new);

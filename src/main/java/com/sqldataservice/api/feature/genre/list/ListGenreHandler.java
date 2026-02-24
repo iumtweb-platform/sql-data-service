@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sqldataservice.api.repository.GenreRepository;
+import com.sqldataservice.api.shared.KeyValueItem;
 
 @Component
 class ListGenreHandler {
@@ -15,10 +16,10 @@ class ListGenreHandler {
   }
 
   @Transactional(readOnly = true)
-  public ListGenreResponse[] handle() {
+  public KeyValueItem[] handle() {
     var genres = genreRepository.findAll();
     return genres.stream()
-        .map(genre -> new ListGenreResponse(genre.getId(), genre.getGenre()))
-        .toArray(ListGenreResponse[]::new);
+        .map(genre -> new KeyValueItem(genre.getId(), genre.getGenre()))
+        .toArray(KeyValueItem[]::new);
   }
 }

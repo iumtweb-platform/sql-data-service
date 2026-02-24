@@ -1,6 +1,7 @@
 package com.sqldataservice.api.feature.anime.detail;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,7 +15,7 @@ public class DetailAnimeEndpoint {
   }
 
   @GetMapping
-  public DetailAnimeResponse handle(DetailAnimeQuery query) {
-    return handler.handle(query);
+  public DetailAnimeResponse handle(@PathVariable int id) {
+    return handler.handle(id);
   }
 }

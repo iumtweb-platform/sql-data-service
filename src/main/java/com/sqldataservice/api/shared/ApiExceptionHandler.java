@@ -1,4 +1,4 @@
-package com.sqldataservice.api;
+package com.sqldataservice.api.shared;
 
 import java.util.List;
 

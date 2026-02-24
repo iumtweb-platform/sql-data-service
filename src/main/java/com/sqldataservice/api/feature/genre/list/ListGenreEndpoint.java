@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sqldataservice.api.shared.KeyValueItem;
+
 @RestController
 @RequestMapping("/api/genre")
 public class ListGenreEndpoint {
@@ -15,7 +17,7 @@ public class ListGenreEndpoint {
   }
 
   @GetMapping
-  public ListGenreResponse[] handle() {
+  public KeyValueItem[] handle() {
     return handler.handle();
   }
 }
