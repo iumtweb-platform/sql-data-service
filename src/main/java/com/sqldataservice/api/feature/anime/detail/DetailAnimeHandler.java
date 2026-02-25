@@ -57,7 +57,9 @@ class DetailAnimeHandler {
 			KeyValueItem[] streamingServices = anime.getStreamingServices().stream()
 					.map(s -> new KeyValueItem(s.getId(), s.getStreamingService())).toArray(KeyValueItem[]::new);
 			KeyValueItem type = new KeyValueItem(anime.getType().getId(), anime.getType().getType());
-			KeyValueItem rating = new KeyValueItem(anime.getRating().getId(), anime.getRating().getRating());
+			KeyValueItem rating = anime.getRating() != null
+					? new KeyValueItem(anime.getRating().getId(), anime.getRating().getRating())
+					: null;
 			KeyValueItem status = new KeyValueItem(anime.getStatus().getId(), anime.getStatus().getStatus());
 
 			int[] characterIds = characterAnimeWorkRepository.findAllByIdAnimeId(anime.getId()).stream()
@@ -102,7 +104,7 @@ class DetailAnimeHandler {
 					.toArray(AnimeSummaryItem[]::new);
 
 			return new DetailAnimeResponse(anime.getId(), anime.getTitle(), anime.getSynopsis(),
-					anime.getImageUrl(), type, anime.getEpisodes().intValue(), status,
+					anime.getImageUrl(), type, anime.getEpisodes(), status,
 					rating, genres, studios, themes, demographics, source, licensors, producers,
 					streamingServices, recommendations, detailCharacters);
 		}).orElseThrow(() -> new NotFoundException("Anime", String.valueOf(id)));
