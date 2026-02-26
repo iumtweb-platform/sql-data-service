@@ -1,0 +1,62 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.0.3'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.sqldataservice'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+    runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'com.h2database:h2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+def loadDotenv = { File envFile ->
+    def vars = [:]
+    if (!envFile.exists()) {
+        return vars
+    }
+
+    envFile.eachLine { rawLine ->
+        def line = rawLine.trim()
+        if (!line || line.startsWith('#')) {
+            return
+        }
+
+        int separatorIndex = line.indexOf('=')
+        if (separatorIndex <= 0) {
+            return
+        }
+
+        def key = line.substring(0, separatorIndex).trim()
+        def value = line.substring(separatorIndex + 1).trim()
+
+        if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+            value = value.substring(1, value.length() - 1)
+        }
+
+        vars[key] = value
+    }
+
+    return vars
+}
+
+tasks.named('bootRun') {
+    workingDir = rootDir
+    environment(loadDotenv(file("${rootDir}/.env")))
+}

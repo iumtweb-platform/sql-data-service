@@ -4,7 +4,7 @@ pkgs.mkShell {
   buildInputs = with pkgs; [
     openjdk21
     maven
-  
+    gradle
   ];
 
   shellHook = ''

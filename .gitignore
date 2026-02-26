@@ -54,3 +54,5 @@ build/
 !**/src/test/**/build/
 
 .env
+
+.gradle/
