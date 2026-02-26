@@ -11,6 +11,12 @@ permissions:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    env:
+      containerRegistry: ghcr.io
+      imageName: sql-data-service
+      appVersion: ""
+      appVersionCommit: ""
+      shortSha: ""
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,27 +32,28 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Read app version from Gradle
         run: |
-          APP_VERSION=$(./gradlew properties -q | awk -F': ' '/^version:/ { print $2; exit }')
-          echo "APP_VERSION=${APP_VERSION}" >> $GITHUB_ENV
+          ${{env.appVersion}}=$(./gradlew properties -q | awk -F': ' '/^version:/ { print $2; exit }')
       - name: Build version-commit tag
         run: |
-          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
-          echo "SHORT_SHA=${SHORT_SHA}" >> $GITHUB_ENV
-          echo "APP_VERSION_COMMIT=${APP_VERSION}-${SHORT_SHA}" >> $GITHUB_ENV
+          ${{ env.shortSha }}=$(echo "${GITHUB_SHA}" | cut -c1-7)
+          ${{ env.appVersionCommit }}=${{ env.appVersion }}-${{ env.shortSha }}
       - name: Build and push
         uses: docker/build-push-action@v6
+        env:
+          fullImageName: ${{env.containerRegistry}}/${{ vars.GHCR_USER }}/${{ env.imageName }}
         with:
           push: true
           tags: |
-            ghcr.io/${{ vars.GHCR_USER }}/sql-data-service:latest
-            ghcr.io/${{ vars.GHCR_USER }}/sql-data-service:${{ env.APP_VERSION }}
-            ghcr.io/${{ vars.GHCR_USER }}/sql-data-service:${{ env.APP_VERSION_COMMIT }}
+            ${{env.fullImageName}}:latest
+            ${{env.fullImageName}}:${{ env.appVersion }}
+            ${{env.fullImageName}}:${{ env.appVersionCommit }}
       - name: Tag repository commit
+        env:
+          tagName: v${{ env.appVersionCommit }}
         run: |
-          TAG_NAME="${APP_VERSION_COMMIT}"
-          if git ls-remote --tags origin "refs/tags/${TAG_NAME}" | grep -q "refs/tags/${TAG_NAME}$"; then
-            echo "Tag ${TAG_NAME} already exists. Skipping."
+          if git ls-remote --tags origin "refs/tags/${{env.tagName}}" | grep -q "refs/tags/${{env.tagName}}$"; then
+            echo "Tag ${{env.tagName}} already exists. Skipping."
           else
-            git tag "${TAG_NAME}" "${GITHUB_SHA}"
-            git push origin "refs/tags/${TAG_NAME}"
+            git tag "${{env.tagName}}" "${{env.shortSha}}"
+            git push origin "refs/tags/${{env.tagName}}"
           fi
