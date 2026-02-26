@@ -32,11 +32,14 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Read app version from Gradle
         run: |
-          ${{env.appVersion}}=$(./gradlew properties -q | awk -F': ' '/^version:/ { print $2; exit }')
+          appVersion=$(./gradlew properties -q | awk -F': ' '/^version:/ { print $2; exit }')
+          echo "appVersion=$appVersion" >> $GITHUB_ENV
       - name: Build version-commit tag
         run: |
-          ${{ env.shortSha }}=$(echo "${GITHUB_SHA}" | cut -c1-7)
-          ${{ env.appVersionCommit }}=${{ env.appVersion }}-${{ env.shortSha }}
+          shortSha=$(echo "${GITHUB_SHA}" | cut -c1-7)
+          echo "shortSha=$shortSha" >> $GITHUB_ENV
+          appVersionCommit=${{ env.appVersion }}-$shortSha
+          echo "appVersionCommit=$appVersionCommit" >> $GITHUB_ENV
       - name: Build and push
         uses: docker/build-push-action@v6
         env:
