@@ -1,4 +1,5 @@
 # sql-data-service
+
 Develop Spring Boot Backend to manage SQL data
 
 ## Generate JPA entities from PostgreSQL schema
@@ -14,4 +15,4 @@ Generated classes are written to `target/generated-sources/hibernate`.
 
 The `codegen` Maven profile also adds that directory as a compile source root, so you can import generated entities directly in your code after running generation.
 
-If your IDE does not immediately show them, refresh the Maven project (VS Code: **Maven: Reload projects**).
+If your IDE does not immediately show them, refresh the Maven project (VS Code: **Maven: Reload projects**)
