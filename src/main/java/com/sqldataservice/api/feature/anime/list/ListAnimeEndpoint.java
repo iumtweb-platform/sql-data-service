@@ -24,7 +24,7 @@ public class ListAnimeEndpoint {
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "20") int elementsPerPage,
       @RequestParam(required = false) String search,
-      @RequestParam(defaultValue = "year") String sortBy,
+      @RequestParam(defaultValue = ListAnimeSortBy.TITLE) String sortBy,
       @RequestParam(defaultValue = "desc") String sortDirection,
       @RequestParam(required = false) String types,
       @RequestParam(required = false) String genres) {

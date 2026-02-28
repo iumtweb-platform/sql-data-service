@@ -32,8 +32,8 @@ class ListAnimeValidator {
       }
     }
     if (query.sortBy() != null && !query.sortBy().isEmpty()) {
-      if (!query.sortBy().equalsIgnoreCase("title") && !query.sortBy().equalsIgnoreCase("year")) {
-        errors.add(new QueryValidationError("sortBy", "must be one of: title, year"));
+      if (!ListAnimeSortBy.isValid(query.sortBy())) {
+        errors.add(new QueryValidationError("sortBy", "must be one of: " + ListAnimeSortBy.listAllString()));
       }
     }
     if (query.sortDirection() != null && !query.sortDirection().isEmpty()) {

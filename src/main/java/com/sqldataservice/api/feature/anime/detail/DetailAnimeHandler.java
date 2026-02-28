@@ -100,6 +100,7 @@ class DetailAnimeHandler {
 			AnimeSummaryItem[] recommendations = anime.getAnimesForRecommendedAnimeId().stream()
 					.map(r -> new AnimeSummaryItem(r.getId(), r.getTitle(),
 							r.getYear() != null ? r.getYear().intValue() : null, r.getImageUrl(), r.getType().getType(),
+							r.getScore(),
 							r.getSynopsis()))
 					.toArray(AnimeSummaryItem[]::new);
 

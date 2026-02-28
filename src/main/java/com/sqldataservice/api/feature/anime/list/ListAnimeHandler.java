@@ -64,9 +64,7 @@ class ListAnimeHandler {
 
     var specification = buildSpecification(query, types, genres);
     var sortDirection = Sort.Direction.fromString(query.sortDirection());
-    var sort = "year".equalsIgnoreCase(query.sortBy())
-        ? Sort.by(new Sort.Order(sortDirection, query.sortBy()).nullsLast())
-        : Sort.by(sortDirection, query.sortBy());
+    var sort = Sort.by(new Sort.Order(sortDirection, query.sortBy()).nullsLast());
     var pageRequest = PageRequest.of(query.page(), query.elementsPerPage(), sort);
     var animePage = animeRepository.findAll(specification, pageRequest);
 
@@ -74,7 +72,7 @@ class ListAnimeHandler {
         .stream()
         .map(anime -> new AnimeSummaryItem(anime.getId(), anime.getTitle(),
             anime.getYear() != null ? anime.getYear().intValue() : null,
-            anime.getImageUrl(), anime.getType().getType(), anime.getSynopsis()))
+            anime.getImageUrl(), anime.getType().getType(), anime.getScore(), anime.getSynopsis()))
         .toList();
 
     long totalElements = animePage.getTotalElements();
