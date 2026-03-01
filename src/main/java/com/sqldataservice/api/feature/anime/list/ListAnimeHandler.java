@@ -40,7 +40,11 @@ class ListAnimeHandler {
 
       if (query.search() != null && !query.search().isBlank()) {
         predicates = builder.and(predicates,
-            builder.like(builder.lower(root.get("title")), "%" + query.search().toLowerCase() + "%"));
+            builder.or(
+                builder.like(builder.lower(root.get("title")), "%" + query.search().toLowerCase() + "%")
+        // builder.like(builder.lower(root.get("synopsis")), "%" +
+        // query.search().toLowerCase() + "%")
+        ));
       }
 
       if (types.length > 0) {
